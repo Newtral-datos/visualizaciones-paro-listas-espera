@@ -1,0 +1,155 @@
+<!-- Fuentes de los datos del paro: pegar entero en un bloque HTML del CMS -->
+<div id="fuentes-datos">
+  <div class="fd-titulo"><span>Las fuentes de los datos</span></div>
+  <div class="fd-instruccion">Pincha en cada <span class="fd-mini"></span></div>
+
+  <div class="fd-tronco"></div>
+  <svg class="fd-llave" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M1 40 Q1 24 17 24 H284 Q300 24 300 8 Q300 24 316 24 H583 Q599 24 599 40 M300 0 V40" vector-effect="non-scaling-stroke"/>
+  </svg>
+
+  <!-- Para cambiar los textos de las tarjetas, edita data-periodo y data-fuente -->
+  <div class="fd-columnas">
+    <div class="fd-columna">
+      <div class="fd-nombre">Paro registrado</div>
+      <div class="fd-circulo" tabindex="0" role="button" aria-label="Paro registrado: ver fuente"
+        data-periodo="Mensual"
+        data-fuente="El Servicio Público de Empleo Estatal (SEPE) del Ministerio de Trabajo y Economía Social"></div>
+    </div>
+    <div class="fd-columna">
+      <div class="fd-nombre">Afiliados</div>
+      <div class="fd-circulo" tabindex="0" role="button" aria-label="Afiliados: ver fuente"
+        data-periodo="Mensual"
+        data-fuente="El Ministerio de Inclusión, Seguridad Social y Migraciones"></div>
+    </div>
+    <div class="fd-columna">
+      <div class="fd-nombre">Encuesta de Población Activa (EPA)</div>
+      <div class="fd-circulo" tabindex="0" role="button" aria-label="Encuesta de Población Activa: ver fuente"
+        data-periodo="Trimestral"
+        data-fuente="Instituto Nacional de Estadística (INE)"></div>
+    </div>
+  </div>
+
+  <div class="fd-tarjeta" role="tooltip" hidden></div>
+</div>
+
+<style>
+  #fuentes-datos {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --fd-rojo: #c40404;
+    position: relative;
+    max-width: 760px;
+    margin: 2em auto;
+    padding: 1em 0 2em;
+    text-align: center;
+    color: #111;
+  }
+  #fuentes-datos .fd-titulo span {
+    display: inline-block;
+    padding: .15em .35em;
+    background: #000;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.5em;
+  }
+  #fuentes-datos .fd-instruccion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6em;
+    margin-top: .6em;
+    font-weight: 600;
+    font-size: 1.15em;
+  }
+  #fuentes-datos .fd-mini {
+    width: 28px;
+    height: 28px;
+    border: 2px dotted var(--fd-rojo);
+    border-radius: 50%;
+  }
+  #fuentes-datos .fd-tronco { width: 1px; height: 110px; margin: 1em auto 0; background: #333; }
+  #fuentes-datos .fd-llave { display: block; width: 66.67%; height: 40px; margin: -8px auto 0; overflow: visible; }
+  #fuentes-datos .fd-llave path { fill: none; stroke: #333; stroke-width: 1px; }
+  #fuentes-datos .fd-columnas { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 2.5em; }
+  #fuentes-datos .fd-columna { display: flex; flex-direction: column; align-items: center; padding: 0 .5em; }
+  #fuentes-datos .fd-nombre {
+    display: flex;
+    align-items: center;
+    min-height: 3.2em;
+    margin-bottom: .8em;
+    font-weight: bold;
+    line-height: 1.6;
+  }
+  #fuentes-datos .fd-circulo {
+    width: min(125px, 100%);
+    aspect-ratio: 1;
+    border: 2px dashed var(--fd-rojo);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color .15s;
+  }
+  #fuentes-datos .fd-circulo:hover,
+  #fuentes-datos .fd-circulo:focus-visible { background: rgba(196, 4, 4, .08); outline: none; }
+  #fuentes-datos .fd-tarjeta {
+    position: absolute;
+    z-index: 10;
+    width: max-content;
+    max-width: min(300px, 90%);
+    padding: .6em .9em;
+    background: var(--fd-rojo);
+    color: #fff;
+    border-radius: 4px;
+    text-align: left;
+    font-weight: 500;
+    line-height: 1.6;
+    pointer-events: none;
+  }
+  #fuentes-datos .fd-tarjeta p { margin: 0; }
+  #fuentes-datos .fd-tarjeta p + p { margin-top: .6em; }
+  #fuentes-datos .fd-tarjeta[hidden] { display: none; }
+</style>
+
+<script>
+(function () {
+  var raiz = document.getElementById("fuentes-datos");
+  var tarjeta = raiz.querySelector(".fd-tarjeta");
+
+  function mostrar(circulo, x, y) {
+    tarjeta.innerHTML = "<p>Periodo: " + circulo.dataset.periodo + "</p><p>Fuente: " + circulo.dataset.fuente + "</p>";
+    tarjeta.hidden = false;
+    // x, y relativos a la caja; la tarjeta nunca se sale por los lados
+    var ancho = raiz.clientWidth;
+    var izquierda = Math.max(0, Math.min(x + 12, ancho - tarjeta.offsetWidth));
+    tarjeta.style.left = izquierda + "px";
+    tarjeta.style.top = (y + 12) + "px";
+  }
+
+  function ocultar() { tarjeta.hidden = true; }
+
+  // Bajo el círculo (para toque y teclado)
+  function mostrarBajo(circulo) {
+    var r = raiz.getBoundingClientRect(), c = circulo.getBoundingClientRect();
+    mostrar(circulo, c.left - r.left + c.width / 2 - 100, c.bottom - r.top - 20);
+  }
+
+  raiz.querySelectorAll(".fd-circulo").forEach(function (circulo) {
+    circulo.addEventListener("mousemove", function (e) {
+      var r = raiz.getBoundingClientRect();
+      mostrar(circulo, e.clientX - r.left, e.clientY - r.top);
+    });
+    circulo.addEventListener("mouseleave", ocultar);
+    circulo.addEventListener("click", function (e) {
+      if (e.pointerType === "mouse") return;
+      mostrarBajo(circulo);
+    });
+    circulo.addEventListener("focus", function () { if (!circulo.matches(":hover")) mostrarBajo(circulo); });
+    circulo.addEventListener("blur", ocultar);
+  });
+
+  // En móvil, tocar fuera de los círculos cierra la tarjeta
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest || !e.target.closest("#fuentes-datos .fd-circulo")) ocultar();
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") ocultar(); });
+})();
+</script>
