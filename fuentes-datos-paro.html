@@ -1,4 +1,5 @@
 <!-- Fuentes de los datos del paro: pegar entero en un bloque HTML del CMS -->
+<meta charset="utf-8">
 <div id="fuentes-datos">
   <div class="fd-titulo"><span>Las fuentes de los datos</span></div>
   <div class="fd-instruccion">Pincha en cada <span class="fd-mini"></span></div>
@@ -122,9 +123,10 @@
     var izquierda = Math.max(0, Math.min(x + 12, ancho - tarjeta.offsetWidth));
     tarjeta.style.left = izquierda + "px";
     tarjeta.style.top = (y + 12) + "px";
+    enviarAltura();
   }
 
-  function ocultar() { tarjeta.hidden = true; }
+  function ocultar() { tarjeta.hidden = true; enviarAltura(); }
 
   // Bajo el círculo (para toque y teclado)
   function mostrarBajo(circulo) {
@@ -151,5 +153,29 @@
     if (!e.target.closest || !e.target.closest("#fuentes-datos .fd-circulo")) ocultar();
   });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") ocultar(); });
+
+  // Altura dinámica: dentro de un iframe, avisa a la página que lo contiene de la altura que necesita.
+  // Cuenta también la tarjeta abierta, para que no quede cortada por debajo.
+  var enIframe = window.parent !== window;
+  var ultima = 0;
+
+  function enviarAltura(forzar) {
+    if (!enIframe) return;
+    var margen = Math.max(parseFloat(getComputedStyle(raiz).marginBottom), parseFloat(getComputedStyle(document.body).marginBottom));
+    var fondo = raiz.getBoundingClientRect().bottom + margen;
+    if (!tarjeta.hidden) fondo = Math.max(fondo, tarjeta.getBoundingClientRect().bottom + 8);
+    var altura = Math.ceil(fondo + window.pageYOffset);
+    if (altura === ultima && !forzar) return;
+    ultima = altura;
+    window.parent.postMessage({ tipo: "altura-iframe", altura: altura }, "*");
+  }
+
+  if (enIframe) {
+    if (window.ResizeObserver) new ResizeObserver(function () { enviarAltura(); }).observe(raiz);
+    window.addEventListener("load", function () { enviarAltura(); });
+    window.addEventListener("resize", function () { enviarAltura(); });
+    window.addEventListener("message", function (e) { if (e.data === "pedir-altura") enviarAltura(true); });
+    enviarAltura();
+  }
 })();
 </script>
