@@ -1,0 +1,186 @@
+<!-- Calculadora de tiempos de espera: pegar entero en un bloque HTML del CMS -->
+<div id="calc-espera">
+  <h4>Calcula los días de espera</h4>
+
+  <label for="ce-ccaa"><span class="ce-num">1</span>. ¿En qué comunidad autónoma vives?</label>
+  <select id="ce-ccaa"></select>
+
+  <div id="ce-paso-tipo">
+    <label for="ce-tipo"><span class="ce-num">2</span>. ¿Para qué quieres cita?</label>
+    <select id="ce-tipo"></select>
+  </div>
+
+  <label for="ce-esp"><span class="ce-num" id="ce-num-esp">3</span>. ¿En qué especialidad?</label>
+  <select id="ce-esp"></select>
+
+  <div id="ce-resultado" aria-live="polite"></div>
+</div>
+
+<style>
+  #calc-espera {
+    --ce-acento: #80dfad;
+    max-width: 680px;
+    margin: 2em auto;
+    padding: 1.5em 0;
+    border-top: 1px solid var(--ce-acento);
+    border-bottom: 1px solid var(--ce-acento);
+  }
+  #calc-espera h4 { margin: 0 0 1.5em; }
+  #calc-espera label { display: block; margin: 1.2em 0 .3em; }
+  #calc-espera select {
+    width: 100%;
+    max-width: 320px;
+    padding: .2em 1.5em .2em 0;
+    font: inherit;
+    font-weight: bold;
+    color: inherit;
+    cursor: pointer;
+    border: 0;
+    border-bottom: 2px solid var(--ce-acento);
+    border-radius: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><path d='M5 8l5 5 5-5z' fill='%23333'/></svg>") no-repeat right center;
+  }
+  #calc-espera #ce-resultado { margin-top: 2em; }
+  #calc-espera #ce-resultado p { margin: 0 0 .5em; }
+  #calc-espera .ce-dias { color: var(--ce-acento); font-size: 30px; font-weight: bold; }
+</style>
+
+<script>
+(function () {
+  // Cada tabla va en formato CSV (separada por comas), con la cabecera en la primera línea.
+  // Primera columna: comunidad. Resto: una columna por especialidad. La columna TOTAL se ignora.
+  // Si una tabla se deja vacía, ese tipo de cita no aparece y la pregunta 2 se oculta.
+  var TABLAS = {
+    "Primera consulta con un especialista": `
+Comunidad Autónoma,Ginecología,Oftalmología,Traumatología,Dermatología,ORL,Neurología,C. Gral y A. Digestivo,Urología,Digestivo,Cardiología,TOTAL
+Andalucía,80,121,172,233,108,179,84,127,117,77,136
+Aragón,88,211,188,143,241,127,66,61,48,50,138
+Principado de Asturias,37,140,146,104,59,70,92,102,31,66,103
+Baleares,66,54,97,39,61,102,40,83,75,65,71
+Canarias,52,172,123,183,163,143,26,77,62,80,162
+Cantabria,38,60,117,68,62,39,36,41,32,52,61
+Castilla y León,48,122,138,104,118,69,64,92,93,68,102
+Castilla-La Mancha,39,69,54,,79,56,22,46,57,59,64
+Cataluña,60,91,188,87,143,93,67,167,81,78,120
+Comunidad Valenciana,65,102,105,103,73,108,64,94,84,105,95
+Extremadura,43,83,163,195,91,127,35,96,123,78,112
+Galicia,41,72,76,44,59,79,41,57,35,51,63
+Madrid,59,72,89,85,69,69,34,36,59,43,68
+Murcia,79,84,95,125,74,61,50,123,56,43,89
+C. Foral de Navarra,77,44,153,428,42,36,88,50,58,35,152
+País Vasco,38,47,65,52,46,34,36,61,35,36,49
+Rioja,13,13,41,20,24,31,41,28,16,23,32
+Ceuta,3,109,3,99,67,46,24,19,67,50,72
+Melilla,9,11,25,6,10,4,1,12,6,5,16
+`,
+    "Intervención quirúrgica": `
+Comunidad Autónoma,Cirugía General y de Digestivo,Ginecología,Oftalmología,ORL,Traumatología,Urología,Cirugía Cardíaca,Angiología/Cir. Vascular,Cirugía Maxilofacial,Cirugía Pediátrica,Cirugía Plástica,Cirugía Torácica,Neurocirugía,Dermatología,TOTAL
+Andalucía,149,175,95,212,187,172,98,347,162,191,525,247,209,66,173
+Aragón,92,48,92,185,163,122,55,115,78,103,323,58,341,59,132
+Principado de Asturias,86,56,85,95,115,82,29,75,95,75,81,24,68,64,91
+Baleares,153,89,88,130,138,93,80,120,86,83,73,55,104,73,105
+Canarias,73,57,77,103,137,93,73,81,112,83,187,77,176,29,106
+Cantabria,118,63,82,160,188,93,27,87,142,79,285,58,151,77,137
+Castilla y León,74,57,48,93,112,107,80,64,82,53,112,104,71,32,87
+Castilla-La Mancha,96,95,110,149,113,117,81,151,163,107,130,36,165,81,117
+Cataluña,150,122,92,166,154,143,59,150,159,139,226,133,191,89,142
+Comunidad Valenciana,66,73,55,115,99,111,63,85,96,147,152,98,128,77,88
+Extremadura,103,67,68,92,192,136,93,242,248,59,227,78,242,48,135
+Galicia,64,48,68,97,88,65,65,53,80,62,76,48,89,42,73
+Madrid,44,47,44,55,54,48,46,58,58,63,57,30,61,44,50
+Murcia,99,80,89,109,113,96,73,77,114,59,175,46,124,96,103
+C. Foral de Navarra,68,65,56,120,117,55,27,89,107,46,173,99,123,52,96
+País Vasco,56,38,57,71,78,55,37,72,64,67,74,22,71,,64
+Rioja,64,74,73,77,91,78,29,48,93,,87,37,,78,78
+Ceuta,47,75,63,135,70,138,,,,,,,,0,94
+Melilla,76,59,77,125,97,57,,,,,,,76,45,82
+`
+  };
+  var FECHA = "31 de diciembre de 2025";
+
+  // datos[ccaa][especialidad] = días (las celdas vacías no se guardan)
+  function leer(texto) {
+    var filas = texto.trim().split(/\r?\n/).map(function (linea) {
+      return linea.split(linea.indexOf("\t") > -1 ? "\t" : ",").map(function (c) { return c.trim(); });
+    });
+    var cabecera = filas.shift() || [];
+    var datos = {};
+    filas.forEach(function (f) {
+      if (!f[0]) return;
+      datos[f[0]] = {};
+      for (var i = 1; i < cabecera.length; i++) {
+        if (/^total$/i.test(cabecera[i])) continue;
+        var n = parseFloat((f[i] || "").replace(",", "."));
+        if (!isNaN(n)) datos[f[0]][cabecera[i]] = n;
+      }
+    });
+    return datos;
+  }
+
+  var tablas = {};
+  Object.keys(TABLAS).forEach(function (tipo) {
+    if (TABLAS[tipo].trim()) tablas[tipo] = leer(TABLAS[tipo]);
+  });
+  var tipos = Object.keys(tablas);
+  if (!tipos.length) return;
+
+  var selCcaa = document.getElementById("ce-ccaa");
+  var selTipo = document.getElementById("ce-tipo");
+  var selEsp = document.getElementById("ce-esp");
+  var salida = document.getElementById("ce-resultado");
+
+  function ordenar(lista) {
+    return lista.sort(function (a, b) { return a.localeCompare(b, "es"); });
+  }
+
+  function rellenar(sel, opciones) {
+    var previo = sel.value;
+    sel.innerHTML = "";
+    opciones.forEach(function (o) { sel.add(new Option(o, o)); });
+    if (opciones.indexOf(previo) > -1) sel.value = previo;
+  }
+
+  // Media simple de todas las comunidades con dato para ese tipo y especialidad
+  function media(tipo, esp) {
+    var valores = Object.keys(tablas[tipo])
+      .map(function (c) { return tablas[tipo][c][esp]; })
+      .filter(function (v) { return v !== undefined; });
+    return valores.reduce(function (a, b) { return a + b; }, 0) / valores.length;
+  }
+
+  function dias(n) { return n + (n === 1 ? " día" : " días"); }
+
+  function actualizar() {
+    var tipo = selTipo.value;
+    rellenar(selEsp, ordenar(Object.keys(tablas[tipo][selCcaa.value] || {})));
+
+    var valor = (tablas[tipo][selCcaa.value] || {})[selEsp.value];
+    if (valor === undefined) { salida.innerHTML = ""; return; }
+
+    var m = Math.round(media(tipo, selEsp.value));
+    var diff = valor - m;
+    var comparacion = diff === 0
+      ? "<b>Igual</b> que"
+      : "<b>" + dias(Math.abs(diff)) + " " + (diff > 0 ? "más" : "menos") + "</b> que";
+
+    salida.innerHTML =
+      "<p>A " + FECHA + ", el tiempo medio de espera era de <span class=\"ce-dias\">" + dias(valor) + "</span></p>" +
+      "<p>" + comparacion + " la media de las comunidades autónomas para esta especialidad (" + dias(m) + ").</p>";
+  }
+
+  var comunidades = {};
+  tipos.forEach(function (t) { Object.keys(tablas[t]).forEach(function (c) { comunidades[c] = true; }); });
+  rellenar(selCcaa, ordenar(Object.keys(comunidades)));
+  rellenar(selTipo, tipos);
+
+  if (tipos.length === 1) {
+    document.getElementById("ce-paso-tipo").style.display = "none";
+    document.getElementById("ce-num-esp").textContent = "2";
+  }
+
+  [selCcaa, selTipo, selEsp].forEach(function (s) { s.addEventListener("change", actualizar); });
+  actualizar();
+})();
+</script>

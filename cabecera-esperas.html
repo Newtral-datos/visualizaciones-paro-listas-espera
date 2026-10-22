@@ -1,0 +1,41 @@
+<!-- Cabecera de cifras de listas de espera: pegar entero en un bloque HTML del CMS -->
+<div id="cab-espera">
+  <div class="ce-titulo">LAS LISTAS DE ESPERA EN SANIDAD</div>
+  <img class="ce-icono-titulo" src="https://www.newtral.es/wp-content/uploads/2024/10/bolitas300.svg" alt="">
+
+  <div class="ce-cajas">
+    <div class="ce-caja">
+      <p>Una intervención <b style="color:#494949">quirúrgica</b> son</p>
+      <div class="ce-dato" style="color:#494949">122</div>
+      <p>días de espera media</p>
+      <img src="https://www.newtral.es/wp-content/uploads/2024/10/intervencion300.svg" alt="">
+    </div>
+
+    <div class="ce-caja">
+      <p>Primera consulta con un <b style="color:#01f3b3">especialista</b></p>
+      <div class="ce-dato" style="color:#01f3b3">102</div>
+      <p>días de espera media</p>
+      <img src="https://www.newtral.es/wp-content/uploads/2024/10/mesa300.svg" alt="">
+    </div>
+
+    <div class="ce-caja">
+      <p>Pacientes con <b style="color:#aaaaaa">más de seis meses</b> de espera para una intervención</p>
+      <div class="ce-dato" style="color:#aaaaaa">21,6%</div>
+      <img src="https://www.newtral.es/wp-content/uploads/2024/10/iconos300.svg" alt="">
+    </div>
+  </div>
+
+  <div class="ce-fecha">Datos a: diciembre de 2025</div>
+</div>
+
+<style>
+  #cab-espera { text-align: center; padding: 1em 0; }
+  #cab-espera .ce-titulo { font-weight: bold; font-size: clamp(1em, 7vw, 1.4em); }
+  #cab-espera .ce-icono-titulo { display: block; width: 42px; height: 42px; margin: .5em auto 3em; }
+  #cab-espera .ce-cajas { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; }
+  #cab-espera .ce-caja { max-width: 300px; margin: 10px; padding: 30px 20px; }
+  #cab-espera .ce-caja p { margin: 0 0 3px; font-size: 1em; }
+  #cab-espera .ce-dato { font-size: 3em; font-weight: bold; line-height: 1.1; margin: 10px 0 20px; }
+  #cab-espera .ce-caja img { display: block; width: 42px; height: 42px; margin: 10px auto 0; }
+  #cab-espera .ce-fecha { font-size: .8em; color: #aaaaaa; margin-top: 3em; }
+</style>
