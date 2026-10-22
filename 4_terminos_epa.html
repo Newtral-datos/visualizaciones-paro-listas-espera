@@ -136,13 +136,16 @@
 
   /* Móvil: círculos en vertical y cada texto debajo de su círculo, a ancho completo */
   @container (max-width: 599px) {
-    .nt-terminos-epa .nt-tronco { height: 40px; }
+    .nt-terminos-epa .nt-tronco { height: 30px; }
     .nt-terminos-epa .nt-llave { display: none; }
-    .nt-terminos-epa .nt-items { grid-template-columns: 1fr; row-gap: 2.5em; margin-top: 2em; }
+    .nt-terminos-epa .nt-items { grid-template-columns: 1fr; row-gap: 1.6em; margin-top: 1.5em; }
+    .nt-terminos-epa .nt-circulo { width: 90px; height: 90px; }
+    .nt-terminos-epa .nt-etiqueta { margin-bottom: .5em; }
+    .nt-terminos-epa .nt-flecha { margin-bottom: .5em; }
     .nt-terminos-epa .nt-item { display: block; }
     .nt-terminos-epa .nt-item .nt-cabeza { grid-column: auto; }
     .nt-terminos-epa .nt-etiqueta { max-width: none; }
-    .nt-terminos-epa .nt-item .nt-panel { display: none; width: 100%; margin-top: 1.2em; }
+    .nt-terminos-epa .nt-item .nt-panel { display: none; width: 100%; margin-top: 1em; }
     .nt-terminos-epa .nt-item .nt-panel.nt-abierto { display: block; animation: nt-terminos-epa-fundido .2s; }
   }
   @keyframes nt-terminos-epa-fundido { from { opacity: 0; } to { opacity: 1; } }

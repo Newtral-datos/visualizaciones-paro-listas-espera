@@ -127,13 +127,16 @@
 
   /* Móvil: círculos en vertical y cada texto debajo de su círculo, a ancho completo */
   @container (max-width: 599px) {
-    .nt-diferencias .nt-tronco { height: 40px; }
+    .nt-diferencias .nt-tronco { height: 30px; }
     .nt-diferencias .nt-llave { display: none; }
-    .nt-diferencias .nt-items { grid-template-columns: 1fr; row-gap: 2.5em; margin-top: 2em; }
+    .nt-diferencias .nt-items { grid-template-columns: 1fr; row-gap: 1.6em; margin-top: 1.5em; }
+    .nt-diferencias .nt-circulo { width: 90px; height: 90px; }
+    .nt-diferencias .nt-etiqueta { margin-bottom: .5em; }
+    .nt-diferencias .nt-flecha { margin-bottom: .5em; }
     .nt-diferencias .nt-item { display: block; }
     .nt-diferencias .nt-item .nt-cabeza { grid-column: auto; }
     .nt-diferencias .nt-etiqueta { max-width: none; }
-    .nt-diferencias .nt-item .nt-panel { display: none; width: 100%; margin-top: 1.2em; }
+    .nt-diferencias .nt-item .nt-panel { display: none; width: 100%; margin-top: 1em; }
     .nt-diferencias .nt-item .nt-panel.nt-abierto { display: block; animation: nt-diferencias-fundido .2s; }
   }
   @keyframes nt-diferencias-fundido { from { opacity: 0; } to { opacity: 1; } }

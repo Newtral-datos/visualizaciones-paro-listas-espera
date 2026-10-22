@@ -132,13 +132,16 @@
 
   /* Móvil: círculos en vertical y cada texto debajo de su círculo, a ancho completo */
   @container (max-width: 599px) {
-    .nt-fuentes .nt-tronco { height: 40px; }
+    .nt-fuentes .nt-tronco { height: 30px; }
     .nt-fuentes .nt-llave { display: none; }
-    .nt-fuentes .nt-items { grid-template-columns: 1fr; row-gap: 2.5em; margin-top: 2em; }
+    .nt-fuentes .nt-items { grid-template-columns: 1fr; row-gap: 1.6em; margin-top: 1.5em; }
+    .nt-fuentes .nt-circulo { width: 90px; height: 90px; }
+    .nt-fuentes .nt-etiqueta { margin-bottom: .5em; }
+    .nt-fuentes .nt-flecha { margin-bottom: .5em; }
     .nt-fuentes .nt-item { display: block; }
     .nt-fuentes .nt-item .nt-cabeza { grid-column: auto; }
     .nt-fuentes .nt-etiqueta { max-width: none; }
-    .nt-fuentes .nt-item .nt-panel { display: none; width: 100%; margin-top: 1.2em; }
+    .nt-fuentes .nt-item .nt-panel { display: none; width: 100%; margin-top: 1em; }
     .nt-fuentes .nt-item .nt-panel.nt-abierto { display: block; animation: nt-fuentes-fundido .2s; }
   }
   @keyframes nt-fuentes-fundido { from { opacity: 0; } to { opacity: 1; } }
