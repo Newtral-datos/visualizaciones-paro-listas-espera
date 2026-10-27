@@ -92,3 +92,21 @@ Cada bloque va en un bloque **HTML personalizado**. Copia el bloque entero.
 <iframe class="iframe-altura-auto iframe-terminos-epa" src="https://newtral-datos.github.io/visualizaciones-paro-listas-espera/4_terminos_epa.html" title="Algunos términos de la EPA" width="100%" scrolling="no" frameborder="0" style="display:block;width:100%;border:0;overflow:hidden;"></iframe>
 <script src="https://newtral-datos.github.io/visualizaciones-paro-listas-espera/altura-iframes.js"></script>
 ```
+
+## Navegación entre capítulos del especial de paro
+
+Los dos bloques son iguales en las páginas de Ministerios y de EPA: `capitulos.js` detecta en qué página está, marca su capítulo y enlaza al otro. Las URLs de los capítulos se cambian en `capitulos.js`, no en WordPress.
+
+### Menú de capítulos (arriba del contenido)
+
+```html
+<div class="nt-capitulos"></div>
+<script src="https://newtral-datos.github.io/visualizaciones-paro-listas-espera/capitulos.js"></script>
+```
+
+### Continúa leyendo (abajo del contenido)
+
+```html
+<div class="nt-continua"></div>
+<script src="https://newtral-datos.github.io/visualizaciones-paro-listas-espera/capitulos.js"></script>
+```
