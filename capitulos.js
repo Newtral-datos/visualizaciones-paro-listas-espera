@@ -6,8 +6,8 @@
 // Para cambiar una URL o añadir un capítulo, basta con tocar CAPITULOS: las páginas se actualizan solas.
 (function () {
   var CAPITULOS = [
-    { nombre: "Ministerios", url: "https://www.newtral.es/paro-ministerios/20261027/" },
-    { nombre: "EPA", url: "https://www.newtral.es/paro-epa/20261027/" }
+    { nombre: "Ministerios", url: "https://www.newtral.es/paro-ministerios/20261103/" },
+    { nombre: "EPA", url: "https://www.newtral.es/paro-epa/20261103/" }
   ];
   var TITULO = "Los datos del paro en España";
 
